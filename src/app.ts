@@ -3,8 +3,8 @@ dotenv.config();
 import express, { type Application, type Request, type Response } from "express";
 import cors from "cors";
 import path from "path";
-import router from "./app/routes"; // COMMENT THIS OUT FIRST
-import { errorHandler, notFound } from "./app/middlewares/error.middleware"; // COMMENT THIS OUT TOO
+import router from "./app/routes"; 
+import { errorHandler, notFound } from "./app/middlewares/error.middleware"; 
 
 const app: Application = express();
 
@@ -16,13 +16,13 @@ app.use(cors());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Application routes
-app.use("/api/v1", router); // COMMENTED OUT
+app.use("/api/v1", router); 
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Jotter API is running");
 });
 
-app.use(notFound); // COMMENTED OUT
-app.use(errorHandler); // COMMENTED OUT
+app.use(notFound); 
+app.use(errorHandler); 
 
 export default app;
