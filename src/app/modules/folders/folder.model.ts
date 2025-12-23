@@ -1,22 +1,22 @@
-import mongoose, { Schema } from 'mongoose';
-import { IFolder } from '../../interfaces/models';
-import File from '../files/file.model';
+import mongoose, { Schema } from "mongoose";
+import { IFolder } from "../../interfaces/models";
+import File from "../files/file.model";
 
 const FolderSchema: Schema = new Schema(
   {
     name: {
       type: String,
-      required: [true, 'Please add a folder name'],
+      required: [true, "Please add a folder name"],
       trim: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     parentFolder: {
       type: Schema.Types.ObjectId,
-      ref: 'Folder',
+      ref: "Folder",
     },
     isPrivate: {
       type: Boolean,
@@ -37,7 +37,7 @@ const FolderSchema: Schema = new Schema(
 );
 
 // Cascading delete
-FolderSchema.pre('findOneAndDelete', async function (next) {
+FolderSchema.pre("findOneAndDelete", async function (next) {
   const doc = await this.model.findOne(this.getQuery());
   if (doc) {
     // Delete all files in this folder
@@ -45,15 +45,14 @@ FolderSchema.pre('findOneAndDelete', async function (next) {
     // Recursively delete subfolders
     const subfolders = await this.model.find({ parentFolder: doc._id });
     for (const sub of subfolders) {
-      await mongoose.model('Folder').findByIdAndDelete(sub._id);
+      await mongoose.model("Folder").findByIdAndDelete(sub._id);
     }
   }
-  next();
 });
 
 // Indexes
 FolderSchema.index({ owner: 1 });
 FolderSchema.index({ parentFolder: 1 });
-FolderSchema.index({ name: 'text' });
+FolderSchema.index({ name: "text" });
 
-export default mongoose.models.Folder || mongoose.model<IFolder>('Folder', FolderSchema);
+export default mongoose.models.Folder || mongoose.model<IFolder>("Folder", FolderSchema);
